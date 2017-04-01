@@ -14,8 +14,10 @@ py: ${IN}
 	fc_consensus ${FLAGS} > out.py.fasta < ${IN}
 comp:
 	diff out.nim.fasta ${GOLDEN}
-%.la4falcon:
-	${GS} show data/la4.$*
-	${GS} update data/la4.$*
-	${GS} show data/la4.$*
+${IN}: ${SIZE}
+${SIZE}:
+	${GS} show data/la4.${SIZE}
+	${GS} update data/la4.${SIZE}
+	${GS} show data/la4.${SIZE}
+.PHONY: short long huge
 .PHONY: nim py comp
