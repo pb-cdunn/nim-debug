@@ -4,7 +4,7 @@ IN:=    data/la4.${SIZE}/${SIZE}.la4falcon
 GOLDEN:=data/la4.${SIZE}/${SIZE}.cns.fasta
 FLAGS:=--output_multi --min_idt 0.70 --min_cov 4 --max_n_read 500 --n_core $N
 F:=../main.exe
-GS:=../../git-sym/git-sym
+GS:=../git-sym/git-sym
 
 vpath %.la4falcon data/la4.short:data/la4.long:data/la4.huge
 
