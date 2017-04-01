@@ -15,7 +15,7 @@ py: ${IN}
 comp:
 	diff out.nim.fasta ${GOLDEN}
 %.la4falcon:
-	${GS} show data/la4.${SIZE}
-	${GS} update data/la4.${SIZE}
-	${GS} show data/la4.${SIZE}
+	${GS} show data/la4.$*
+	${GS} update data/la4.$*
+	${GS} show data/la4.$*
 .PHONY: nim py comp
