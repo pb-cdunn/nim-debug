@@ -10,7 +10,7 @@ from poo import nil
 import os
 import algorithm
 import threadpool
-import nre
+#import nre
 import sequtils
 import sets
 from strutils import `strip`, `split`
@@ -154,10 +154,11 @@ proc get_consensus_without_trim(args: ConsensusArgs): ConsensusResult =
     common.free_consensus_data(consensus_data_ptr)
     return (consensus, args.seed_id)
   """
+discard """
 proc findall_patt(consensus: string, patt: Regex): seq[string] =
   result = findall(consensus, patt)
   #echo consensus[0], " ", len(consensus), " ", consensus[^1], " ", len(result)
-
+"""
 iterator findall_good_regions(consensus: string, outoo: var string): int =
   let n = len(consensus)
   var cbeg = 0
@@ -209,9 +210,9 @@ proc process_consensus(cargs: ConsensusArgs) {.thread} =
         echo ">"&seed_id&"_f"
         echo consensus
         return
-    var good_regions: Regex
-    if good_regions.isNil:
-      good_regions = re"[ACGT]+"
+    #var good_regions: Regex
+    #if good_regions.isNil:
+    #  good_regions = re"[ACGT]+"
     #  #log("good_regions isNil!!!")
     #var cns = findall_patt(consensus, good_regions)
     if true: #args.output_multi:
