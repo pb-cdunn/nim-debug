@@ -14,7 +14,8 @@ py: ${IN}
 	fc_consensus ${FLAGS} > out.py.fasta < ${IN}
 comp:
 	diff out.nim.fasta ${GOLDEN}
-${IN}: ${SIZE}
+${IN}:
+	${MAKE} ${SIZE}
 ${SIZE}:
 	${GS} show data/la4.${SIZE}
 	${GS} update data/la4.${SIZE}
