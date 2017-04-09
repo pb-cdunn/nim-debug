@@ -349,9 +349,11 @@ proc get_cns_from_align_tags*(tag_seqs: var seq[ref align_tags_t]; n_tag_seqs: s
   var msa_array: ref msa_pos_t
   block:
     # Ensure msa_array exists.
-    assert(t_len < 100000)
+    #let size = 100000
+    #assert(t_len < 100000)
+    let size = tlen + 1
     if msa_array == nil:
-      msa_array = get_msa_working_sapce(100000)
+      msa_array = get_msa_working_sapce(cast[cuint](size))
   defer:
     #msa_array = nil
     clean_msa_working_space(msa_array, (t_len + 1))
