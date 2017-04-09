@@ -331,7 +331,7 @@ proc clean_msa_working_space*(msa_array: ref msa_pos_t; max_t_len: int) =
       """
     inc(i)
 
-var msa_array {.threadvar.}: ref msa_pos_t
+#var msa_array {.threadvar.}: ref msa_pos_t
 
 
 proc get_cns_from_align_tags*(tag_seqs: var seq[ref align_tags_t]; n_tag_seqs: seq_coor_t;
@@ -346,6 +346,7 @@ proc get_cns_from_align_tags*(tag_seqs: var seq[ref align_tags_t]; n_tag_seqs: s
   var c_tag: ptr align_tag_t
   newSeq(coverage, t_len)
 
+  var msa_array: ref msa_pos_t
   block:
     # Ensure msa_array exists.
     assert(t_len < 100000)
