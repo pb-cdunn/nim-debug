@@ -1,10 +1,10 @@
 NIMFLAGS+=--threads:on
 #NIMFLAGS+=--threadAnalysis:off
 NIMFLAGS+=--verbosity:2
-NIMFLAGS+=-d:debug
-#NIMFLAGS+=-d:release
+#NIMFLAGS+=-d:debug
+NIMFLAGS+=-d:release
 NIMFLAGS+=--tlsemulation:on
-NIMFLAGS+=-d:debugHeapLinks
+#NIMFLAGS+=-d:debugHeapLinks
 
 pass: main.exe
 	N=0 SIZE=short make -C test
