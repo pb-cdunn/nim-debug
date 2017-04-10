@@ -203,7 +203,7 @@ proc process_consensus(cargs: ConsensusArgs) {.thread} =
     """
     #var (consensus, seed_id) = get_consensus_without_trim(cargs)
     var (consensus, seed_id) = get_con(cargs)
-    #log("len(consensus)=", $len(consensus), " in seed ", seed_id)
+    log("len(consensus)=", $len(consensus), " in seed ", seed_id)
     if len(consensus) < 500:
         return
     if false: # args.output_full:
@@ -220,13 +220,14 @@ proc process_consensus(cargs: ConsensusArgs) {.thread} =
         #for cns_seq in findall_patt(consensus, good_regions):
         var cns_seq = newStringOfCap(len(consensus))
         for _ in findall_good_regions(consensus, cns_seq):
-            #log("$# $#\L $#" % [$len(cns_seq), $len(consensus), repr(cns_seq)]) #, repr(consensus)])
+            #log("$# $#\L $#\L $#" % [$len(cns_seq), $len(consensus), repr(cns_seq), repr(consensus)])
             if len(cns_seq) < 500:
                 continue
             if seq_i >= 10:
                 break
             #print ">prolog/%s%01d/%d_%d" % (seed_id, seq_i, 0, len(cns_seq))
             echo ">prolog/", seed_id, seq_i, "/", 0, "_", len(cns_seq)
+            #log(">prolog/", $seed_id, $seq_i, " ", $len(cns_seq))
             echo format_seq(cns_seq, 80)
             seq_i += 1
     #else:
@@ -286,6 +287,7 @@ proc main(min_cov=6, min_cov_aln=10, max_cov_aln=0, min_len_aln=0, min_n_read=10
       let i = waitForOpenThreadIndex(threads)
       #threads.add(rthread)
       threads[i] = rthread
+      log("thread slot=", $i)
       log("tot=$1 occ=$2, free=$3 b4" % [$getTotalMem(), $getOccupiedMem(), $getFreeMem()])
       GC_fullCollect()
       log("tot=$1 occ=$2, free=$3 now" % [$getTotalMem(), $getOccupiedMem(), $getFreeMem()])
