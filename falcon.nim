@@ -89,10 +89,10 @@ type
     #p_delta*: ptr uint8         ## # the tag delta of the previous base
     #p_q_base*: ptr char         ## # the previous base
     #link_count*: ptr uint16
-    p_t_pos*: seq[seq_coor_t]    ## # the tag position of the previous base
-    p_delta*: seq[uint8]         ## # the tag delta of the previous base
-    p_q_base*: seq[char]         ## # the previous base
-    link_count*: seq[uint16]
+    #p_t_pos*: seq[seq_coor_t]    ## # the tag position of the previous base
+    #p_delta*: seq[uint8]         ## # the tag delta of the previous base
+    #p_q_base*: seq[char]         ## # the previous base
+    #link_count*: seq[uint16]
     p_link: seq[align_tag_col_link_t]
     count*: uint16
     best_p_t_pos*: seq_coor_t
@@ -171,10 +171,10 @@ proc free_align_tags*(tags: ref align_tags_t) =
   #dealloc(tags)
 
 proc allocate_aln_col*(col: ptr align_tag_col_t) =
-  newSeq(col.p_t_pos, col.size)
-  newSeq(col.p_delta, col.size)
-  newSeq(col.p_q_base, col.size)
-  newSeq(col.link_count, col.size)
+  #newSeq(col.p_t_pos, col.size)
+  #newSeq(col.p_delta, col.size)
+  #newSeq(col.p_q_base, col.size)
+  #newSeq(col.link_count, col.size)
   newSeq(col.p_link, col.size)
   #col.p_t_pos = calloc0[seq_coor_t](col.size)
   #col.p_delta = calloc0[uint8](col.size)
@@ -183,14 +183,14 @@ proc allocate_aln_col*(col: ptr align_tag_col_t) =
 
 proc realloc_aln_col*(col: ptr align_tag_col_t) =
   #echo "realloc_aln_col @", cast[ByteAddress](col), " to ", col.size
-  assert len(col.p_t_pos) == len(col.p_delta)
-  assert len(col.p_t_pos) == len(col.p_q_base)
-  assert len(col.p_t_pos) == len(col.link_count)
-  let new_size = cast[int](col.size) - len(col.p_t_pos)
-  col.p_t_pos.add(newSeq[seq_coor_t](new_size))
-  col.p_delta.add(newSeq[uint8](new_size))
-  col.p_q_base.add(newSeq[char](new_size))
-  col.link_count.add(newSeq[uint16](new_size))
+  #assert len(col.p_link) == len(col.p_delta)
+  #assert len(col.p_link) == len(col.p_q_base)
+  #assert len(col.p_link) == len(col.link_count)
+  let new_size = cast[int](col.size) - len(col.p_link)
+  #col.p_t_pos.add(newSeq[seq_coor_t](new_size))
+  #col.p_delta.add(newSeq[uint8](new_size))
+  #col.p_q_base.add(newSeq[char](new_size))
+  #col.link_count.add(newSeq[uint16](new_size))
   col.p_link.add(newSeq[align_tag_col_link_t](new_size))
   #col.p_t_pos = realloc0[seq_coor_t](col.p_t_pos, col.size)
   #col.p_delta = realloc0[uint8](col.p_delta, col.size)
@@ -269,9 +269,9 @@ proc update_col*(col: ptr align_tag_col_t; p_t_pos: seq_coor_t; p_delta: uint8;
   inc(col.count, 1)
   kk = 0
   while kk < col.n_link.int16:
-    if p_t_pos == col.p_t_pos[kk.int] and p_delta == col.p_delta[kk.int] and
-        p_q_base == col.p_q_base[kk]:
-      inc(col.link_count[kk])
+    if p_t_pos == col.p_link[kk].p_t_pos and p_delta == col.p_link[kk].p_delta and
+        p_q_base == col.p_link[kk].p_q_base:
+      inc(col.p_link[kk].link_count)
       updated = 1
       break
     inc(kk)
@@ -288,10 +288,10 @@ proc update_col*(col: ptr align_tag_col_t; p_t_pos: seq_coor_t; p_delta: uint8;
     #log("repr(col)=", repr(col))
     kk = col.n_link.int16
     #log("kk=", $kk)
-    col.p_t_pos[kk.int] = p_t_pos
-    col.p_delta[kk] = p_delta
-    col.p_q_base[kk] = p_q_base
-    col.link_count[kk] = 1
+    col.p_link[kk].p_t_pos = p_t_pos
+    col.p_link[kk].p_delta = p_delta
+    col.p_link[kk].p_q_base = p_q_base
+    col.p_link[kk].link_count = 1
     inc(col.n_link)
 
 proc get_msa_working_sapce*(max_t_len: cuint): ref msa_pos_t =
@@ -450,9 +450,9 @@ proc get_cns_from_align_tags*(tag_seqs: var seq[ref align_tags_t]; n_tag_seqs: s
             var pi: int #cint
             var pj: int #uint8
             var pkk: int #uint8
-            pi = aln_col.p_t_pos[ck.int]
-            pj = aln_col.p_delta[ck].int
-            case aln_col.p_q_base[ck]
+            pi = aln_col.p_link[ck].p_t_pos
+            pj = aln_col.p_link[ck].p_delta.int
+            case aln_col.p_link[ck].p_q_base
             of 'A':
               pkk = 0
             of 'C':
@@ -465,16 +465,16 @@ proc get_cns_from_align_tags*(tag_seqs: var seq[ref align_tags_t]; n_tag_seqs: s
               pkk = 4
             else:
               pkk = 4
-            if aln_col.p_t_pos[ck.int] == - 1:
-              score = cdouble(aln_col.link_count[ck]) -
+            if aln_col.p_link[ck.int].p_t_pos == - 1:
+              score = cdouble(aln_col.p_link[ck].link_count) -
                   cdouble(coverage[i]) * 0.5
             else:
-              #echo repr(aln_col.link_count[ck])
+              #echo repr(aln_col.p_link[ck].link_count)
               #echo repr(coverage[i])
               #echo pi, " ", pj, " ", pkk
               #echo repr(msa_array[pi])
               score = msa_array[pi].delta[pj].base[pkk].score +
-                  cdouble(aln_col.link_count[ck]) -
+                  cdouble(aln_col.p_link[ck].link_count) -
                   cdouble(coverage[i]) * 0.5
             ## # best_mark = ' ';
             if score > best_score:
