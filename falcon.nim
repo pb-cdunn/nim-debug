@@ -176,10 +176,14 @@ proc allocate_aln_col*(col: ptr align_tag_col_t) =
 
 proc realloc_aln_col*(col: ptr align_tag_col_t) =
   #echo "realloc_aln_col @", cast[ByteAddress](col), " to ", col.size
-  col.p_t_pos.add(newSeq[seq_coor_t](col.size))
-  col.p_delta.add(newSeq[uint8](col.size))
-  col.p_q_base.add(newSeq[char](col.size))
-  col.link_count.add(newSeq[uint16](col.size))
+  assert len(col.p_t_pos) == len(col.p_delta)
+  assert len(col.p_t_pos) == len(col.p_q_base)
+  assert len(col.p_t_pos) == len(col.link_count)
+  let new_size = cast[int](col.size) - len(col.p_t_pos)
+  col.p_t_pos.add(newSeq[seq_coor_t](new_size))
+  col.p_delta.add(newSeq[uint8](new_size))
+  col.p_q_base.add(newSeq[char](new_size))
+  col.link_count.add(newSeq[uint16](new_size))
   #col.p_t_pos = realloc0[seq_coor_t](col.p_t_pos, col.size)
   #col.p_delta = realloc0[uint8](col.p_delta, col.size)
   #col.p_q_base = realloc0[char](col.p_q_base, col.size)
