@@ -77,6 +77,11 @@ type
 
   align_tags_t* = seq[align_tag_t]
 
+  align_tag_col_link_t* = object
+    p_t_pos: seq_coor_t
+    p_delta: uint8
+    p_q_base: char
+    link_count: uint16
   align_tag_col_t* = object
     size*: uint16
     n_link*: uint16
@@ -88,6 +93,7 @@ type
     p_delta*: seq[uint8]         ## # the tag delta of the previous base
     p_q_base*: seq[char]         ## # the previous base
     link_count*: seq[uint16]
+    p_link: seq[align_tag_col_link_t]
     count*: uint16
     best_p_t_pos*: seq_coor_t
     best_p_delta*: uint8
@@ -169,6 +175,7 @@ proc allocate_aln_col*(col: ptr align_tag_col_t) =
   newSeq(col.p_delta, col.size)
   newSeq(col.p_q_base, col.size)
   newSeq(col.link_count, col.size)
+  newSeq(col.p_link, col.size)
   #col.p_t_pos = calloc0[seq_coor_t](col.size)
   #col.p_delta = calloc0[uint8](col.size)
   #col.p_q_base = calloc0[char](col.size)
@@ -184,6 +191,7 @@ proc realloc_aln_col*(col: ptr align_tag_col_t) =
   col.p_delta.add(newSeq[uint8](new_size))
   col.p_q_base.add(newSeq[char](new_size))
   col.link_count.add(newSeq[uint16](new_size))
+  col.p_link.add(newSeq[align_tag_col_link_t](new_size))
   #col.p_t_pos = realloc0[seq_coor_t](col.p_t_pos, col.size)
   #col.p_delta = realloc0[uint8](col.p_delta, col.size)
   #col.p_q_base = realloc0[char](col.p_q_base, col.size)
